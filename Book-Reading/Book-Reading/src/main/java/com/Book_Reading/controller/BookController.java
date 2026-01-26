@@ -10,9 +10,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RestController;
+
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController //handles HTTP requests
 @RequestMapping("/api/books")  //base URL
-public class BoolController {
+public class BookController {
 
     @Autowired
     private BookService bookService;
