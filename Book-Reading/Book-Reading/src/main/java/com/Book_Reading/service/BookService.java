@@ -24,6 +24,9 @@ public class BookService {
     @Autowired
     private BookRepository bookRepository;
 
+    @Autowired
+    private PdfService pdfService;
+
     public List<Book> getAllBooks(){
         return bookRepository.findAll();
     }
@@ -36,20 +39,30 @@ public class BookService {
             Files.createDirectories(uploadPath);
         }
 
-        //generate unique filename
-        String filename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        // 1. Generate filenames for BOTH the PDF and the Cover Image
+        String uniqueId = UUID.randomUUID().toString();
+        String pdfFilename = uniqueId + "_" + file.getOriginalFilename();
+        String imageFilename = uniqueId + "_cover.png"; // E.g., 1234_cover.png
 
-        //define destination path
-        Path filePath = uploadPath.resolve(filename);
-        //save the file
-        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+        // 2. Save the PDF to the uploads folder
+        Path pdfFilePath = uploadPath.resolve(pdfFilename);
+        Files.copy(file.getInputStream(), pdfFilePath, StandardCopyOption.REPLACE_EXISTING);
 
-        //save to databvase
+        // 3. Define where the image should go, and let PdfService create it
+        Path imageFilePath = uploadPath.resolve(imageFilename);
+        int totalPages = pdfService.generateCoverAndCountPages(pdfFilePath.toFile(), imageFilePath.toString());
+
+        // 4. Save to database using your exact column names
         Book book = new Book();
         book.setTitle(title);
         book.setAuthor(author);
-        book.setFilePath(filePath.toString());
-        book.setFormat(getFileExtension(filename));
+        book.setFilePath(pdfFilename); // Store just the filename, not full PC path
+        book.setFormat(getFileExtension(pdfFilename));
+        
+        // ADDED FIELDS:
+        book.setTotalPages(totalPages);
+        book.setCoverPagePath(imageFilename); // Saves "1234_cover.png" to DB
+
         return bookRepository.save(book);
     }
 
