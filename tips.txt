@@ -1,0 +1,5 @@
+start backend:
+Web-Book-Reading/Book-Reading/Book-Reading$ ./mvnw spring-boot:run
+
+start frontend:
+web-Book-Reading/book-reader-frontend$ npm run dev

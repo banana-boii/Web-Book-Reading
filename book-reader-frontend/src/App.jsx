@@ -26,7 +26,7 @@ function App() {
               
               {/* The Book Cover */}
               <img 
-                src={`http://localhost:8080/files/${book.coverPath}`} 
+                src={`http://localhost:8080/uploads/${book.coverPagePath}`} 
                 alt={book.title} 
                 className="book-cover" 
               />
