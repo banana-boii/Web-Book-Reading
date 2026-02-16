@@ -1,4 +1,9 @@
 import { useState , useEffect} from 'react'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Browse from "./pages/Browse";
+import MyBooks from "./pages/MyBooks";
+import Notes from "./pages/Notes";
 import './App.css'
 
 function App() {
@@ -12,43 +17,21 @@ function App() {
   }, []);
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-      <h1>My Book Library</h1>
-      
-      {books.length === 0 ? (
-        <p>No books found.</p>
-      ) : (
+    <Router>
+      <div className="app-container">
         
-        <div className="book-grid">
-          {books.map(book => (
-            // The Card
-            <div key={book.id} className="book-card">
-              
-              {/* The Book Cover */}
-              <img 
-                src={`http://localhost:8080/uploads/${book.coverPagePath}`} 
-                alt={book.title} 
-                className="book-cover" 
-              />
+        {/* The Navbar stays on top of every page */}
+        <Navbar />
 
-              {/* The Hover Overlay */}
-              <div className="hover-overlay">
-                <h3>{book.title}</h3>
-                <p>By {book.author}</p>
-                <div style={{ marginTop: '20px', textAlign: 'center' }}>
-                  <span style={{ fontSize: '24px', fontWeight: 'bold' }}>
-                    {/* Math.round removes decimals */}
-                    {Math.round((book.currentPage / book.totalPages) * 100)}%
-                  </span>
-                  <p>Completed</p>
-                </div>
-              </div>
+        {/* The Routes decide what shows up below the Navbar */}
+        <Routes>
+          <Route path="/" element={<Browse />} />
+          <Route path="/my-books" element={<MyBooks />} />
+          <Route path="/notes" element={<Notes />} />
+        </Routes>
 
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+      </div>
+    </Router>
   )
 }
 

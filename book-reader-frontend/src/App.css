@@ -1,3 +1,10 @@
+.app-container {
+  font-family: 'Arial', sans-serif;
+  background-color: #000000;
+  min-height: 100vh;
+  width: 100%;
+}
+
 /* 1. The Grid Container */
 .book-grid {
   display: grid;
@@ -9,14 +16,14 @@
 /* 2. The Card: Holds the cover and the hover effect */
 .book-card {
   position: relative; /* For positioning the overlay */
-  border-radius: 8px;
+  border-radius: 2px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(200, 54, 54, 0.1);
   transition: transform 0.2s; 
 }
 
 .book-card:hover {
-  transform: translateY(-5px); /* Slight lift on hover */
+  transform: translateY(-2px); /* Slight lift on hover */
 }
 
 /* 3. The Cover Image */
@@ -34,7 +41,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.8); 
+  background: rgba(2, 2, 2, 0.8); 
   color: white;
   display: flex;
   flex-direction: column;
