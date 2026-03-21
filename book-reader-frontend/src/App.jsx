@@ -25,9 +25,9 @@ function MainLayout({ user, setUser }) {
           <Route path="/login" element={<Login setUser={setUser} />} />
           <Route path="/register" element={<Register />} />
           <Route path="/" element={<Browse user={user} />} />
-          <Route path="/my-books" element={<MyBooks />} />
+          <Route path="/my-books" element={<MyBooks user={user} />} />
           <Route path="/notes" element={<Notes />} />
-          <Route path="/read/:id" element={<ReadBook />} />
+          <Route path="/read/:id" element={<ReadBook user={user} />} />
         </Routes>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 
-const ReadBook = () => {
+const ReadBook = ({ user }) => {
   const { id } = useParams(); 
   const [book, setBook] = useState(null);
   const [error, setError] = useState('');
@@ -15,7 +15,15 @@ const ReadBook = () => {
       })
       .then(data => setBook(data))
       .catch(err => setError(err.message));
-  }, [id]);
+
+    if (user) {
+      fetch('http://localhost:8080/api/reading/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id, bookId: id })
+      }).catch(err => console.error("Error logging read progress:", err));
+    }
+  }, [id, user]);
 
   if (error) {
     return <div style={{ padding: '40px', color: 'red', textAlign: 'center' }}><h2>Error: {error}</h2></div>;
