@@ -10,8 +10,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**") // Applies to all your API endpoints
-                .allowedOrigins("http://localhost:5173") // Your Vite React frontend port
+        registry.addMapping("/**") // Applies to all API endpoints
+                .allowedOrigins("http://localhost:5173") // Vite React frontend port
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);

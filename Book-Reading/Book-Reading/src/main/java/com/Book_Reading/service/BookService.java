@@ -31,6 +31,7 @@ public class BookService {
         return bookRepository.findAll();
     }
 
+    // Method to save a book
     public Book saveBook(String title, String author, MultipartFile file) throws IOException {
         //create upload directory if not exists
         Path uploadPath = Paths.get(UPLOAD_DIR);
@@ -66,10 +67,17 @@ public class BookService {
         return bookRepository.save(book);
     }
 
+    // Helper method to extract file extension
     private String getFileExtension(String filename){
         if (filename == null || filename.lastIndexOf(".")==-1){
             return "unknown";
         }
         return filename.substring(filename.lastIndexOf(".")+1).toUpperCase();
+    }
+
+    // Method to get a book by ID, throws an exception if not found
+    public Book getBookById(Long id) throws Exception {
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new Exception("Book not found with ID: " + id));
     }
 }

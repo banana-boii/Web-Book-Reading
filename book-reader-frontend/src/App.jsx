@@ -6,7 +6,7 @@ import MyBooks from "./pages/MyBooks";
 import Notes from "./pages/Notes";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-//import ReadBook from "./pages/ReadBook";
+import ReadBook from "./pages/ReadBook";
 import './App.css';
 
 function MainLayout({ user, setUser }) {
@@ -27,7 +27,7 @@ function MainLayout({ user, setUser }) {
           <Route path="/" element={<Browse user={user} />} />
           <Route path="/my-books" element={<MyBooks />} />
           <Route path="/notes" element={<Notes />} />
-          {/*<Route path="/read/:id" element={<ReadBook />} />*/}
+          <Route path="/read/:id" element={<ReadBook />} />
         </Routes>
       </div>
     </div>

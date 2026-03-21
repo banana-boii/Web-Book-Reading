@@ -28,6 +28,7 @@ public class BookController {
         return ResponseEntity.ok(bookService.getAllBooks());
     }
 
+    // Endpoint to upload a book
     @PostMapping("/upload")
     public ResponseEntity<?> uploadBook(
             @RequestParam("title") String title,
@@ -45,6 +46,17 @@ public class BookController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error uploading the book: " + e.getMessage());
+        }
+    }
+
+    // endpoint to get a book by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getBook(@PathVariable Long id) {
+        try {
+            Book book = bookService.getBookById(id);
+            return ResponseEntity.ok(book);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 }
