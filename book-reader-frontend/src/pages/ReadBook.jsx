@@ -5,6 +5,7 @@ const ReadBook = ({ user }) => {
   const { id } = useParams(); 
   const [book, setBook] = useState(null);
   const [error, setError] = useState('');
+  const [pageInput, setPageInput] = useState(1);
 
   // Fetch book's details 
   useEffect(() => {
@@ -24,6 +25,28 @@ const ReadBook = ({ user }) => {
       }).catch(err => console.error("Error logging read progress:", err));
     }
   }, [id, user]);
+
+  const saveProgress = async () => {
+    if (!user) return;
+    try {
+      const response = await fetch('http://localhost:8080/api/reading/update', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
+          bookId: id,
+          currentPage: pageInput
+        })
+      });
+      if (response.ok) {
+        alert("Bookmark saved!");
+      } else {
+        alert("Failed to save bookmark.");
+      }
+    } catch (err) {
+      console.error("Failed to save progress", err);
+    }
+  };
 
   if (error) {
     return <div style={{ padding: '40px', color: 'red', textAlign: 'center' }}><h2>Error: {error}</h2></div>;
@@ -56,7 +79,24 @@ const ReadBook = ({ user }) => {
           </Link>
           <h3 style={{ margin: 0 }}>{book.title}</h3>
         </div>
+
+        {user ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ fontSize: '0.9rem' }}>Bookmark Page:</span>
+            <input
+              type="number"
+              min="1"
+              value={pageInput}
+              onChange={(e) => setPageInput(e.target.value)}
+              style={{ width: '60px', padding: '5px', borderRadius: '4px', border: 'none', textAlign: 'center' }}
+            />
+            <button onClick={saveProgress} style={{ padding: '5px 15px', backgroundColor: '#2ecc71', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
+              Save
+            </button>
+          </div>
+        ) : (
         <span style={{ fontSize: '0.9rem', color: '#bdc3c7' }}>By {book.author}</span>
+        )}
       </div>
 
       {/* Browser PDF Reader */}

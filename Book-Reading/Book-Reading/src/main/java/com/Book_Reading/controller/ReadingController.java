@@ -6,6 +6,8 @@ import com.Book_Reading.model.User;
 import com.Book_Reading.repository.BookRepository;
 import com.Book_Reading.repository.ReadingProgressRepository;
 import com.Book_Reading.repository.UserRepository;
+import com.Book_Reading.dto.BookProgressDTO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,19 +57,43 @@ public class ReadingController {
         }
     }
 
-    //fetches the user's books
+    //fetches books of the user
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Book>> getMyBooks(@PathVariable Long userId) {
+    public ResponseEntity<List<BookProgressDTO>> getMyBooks(@PathVariable Long userId) {
         User user = userRepository.findById(userId).orElseThrow();
-        
-        //progress records
         List<ReadingProgress> progressList = readingRepository.findByUserOrderByLastReadAtDesc(user);
         
-        // get book for frontend display
-        List<Book> myBooks = progressList.stream()
-                .map(ReadingProgress::getBook)
+        // Map the data
+        List<BookProgressDTO> myBooksWithProgress = progressList.stream()
+                .map(p -> new BookProgressDTO(p.getBook(), p.getCurrentPage()))
                 .collect(Collectors.toList());
                 
-        return ResponseEntity.ok(myBooks);
+        return ResponseEntity.ok(myBooksWithProgress);
+    }
+
+    //update page number
+    @PutMapping("/update")
+    public ResponseEntity<?> updateProgress(@RequestBody Map<String, Object> request) {
+        try {
+            // Extract values
+            Long userId = Long.valueOf(request.get("userId").toString());
+            Long bookId = Long.valueOf(request.get("bookId").toString());
+            Integer currentPage = Integer.valueOf(request.get("currentPage").toString());
+
+            User user = userRepository.findById(userId).orElseThrow();
+            Book book = bookRepository.findById(bookId).orElseThrow();
+
+            // Progress
+            ReadingProgress progress = readingRepository.findByUserAndBook(user, book).orElseThrow(() -> new Exception("Progress record not found"));
+
+            // Update
+            progress.setCurrentPage(currentPage);
+            progress.updateTimestamp();
+            readingRepository.save(progress);
+
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
